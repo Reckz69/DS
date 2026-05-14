@@ -1,0 +1,78 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df = pd.read_csv('iris.csv')
+
+df.head()
+
+df.tail(7)
+
+df.index
+
+df.columns
+
+df.shape
+
+df.dtypes
+
+df.describe()
+
+df.loc[:,["sepal_length","sepal_width"]]
+
+df.isna()
+
+df.iloc[5]
+
+df.size
+
+df.iloc[1:3,0:2]
+
+df[['sepal_length', 'species']]
+
+df.iloc[:7]
+
+from sklearn import preprocessing
+
+x = df[['sepal_length']].values.astype(float)
+
+min_max_scaler = preprocessing.MinMaxScaler()
+
+x_scaled = min_max_scaler.fit_transform(x)
+
+df_normalized = pd.DataFrame(x_scaled)
+
+df_normalized
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+import requests
+
+file_path = 'iris.csv'
+
+df = pd.read_csv(file_path)
+
+plt.figure(figsize=(12, 6))
+sns.scatterplot(x='sepal_length', y='sepal_width', data=df)
+plt.title('Sepal Length vs Sepal Width (Before Normalization)')
+plt.ylabel('Sepal Length')
+plt.xlabel('Index')
+plt.grid(True)
+plt.show()
+
+plt.figure(figsize=(12, 6))
+sns.scatterplot(x=0, y='sepal_width_normalized', data=df_normalized)
+plt.title('Sepal Length (Normalized) vs Sepal Width (Normalized)')
+plt.xlabel('Sepal Length (Normalized)')
+plt.ylabel('Sepal Width (Normalized)')
+plt.grid(True)
+plt.show()
+
+label_encoder = preprocessing.LabelEncoder()
+
+df['species']= label_encoder.fit_transform(df['species'])
+
+df['species'].unique()
