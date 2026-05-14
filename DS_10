@@ -1,0 +1,28 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df = pd.read_csv('Iris.csv')
+
+print(df.dtypes)
+
+numeric_features = ['SepalLengthCm', 'SepalWidthCm', 'PetalLengthCm', 'PetalWidthCm']
+
+plt.figure(figsize=(12, 8))
+for i, feature in enumerate(numeric_features, 1):
+    plt.subplot(2, 2, i)
+    sns.histplot(df[feature], kde=True, color='skyblue')
+    plt.title(f'Distribution of {feature}')
+plt.tight_layout()
+plt.show()
+
+plt.figure(figsize=(12, 8))
+sns.boxplot(data=df[numeric_features])
+plt.title('Boxplot of Iris Features (Identifying Outliers)')
+plt.show()
+
+Q1 = df['SepalWidthCm'].quantile(0.25)
+Q3 = df['SepalWidthCm'].quantile(0.75)
+IQR = Q3 - Q1
+outliers = df[(df['SepalWidthCm'] < (Q1 - 1.5 * IQR)) | (df['SepalWidthCm'] > (Q3 + 1.5 * IQR))]
+print(outliers)
