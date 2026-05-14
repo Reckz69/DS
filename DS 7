@@ -1,0 +1,51 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+import re
+import nltk
+
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('averaged_perceptron_tagger')
+
+
+df = pd.read_csv('spam.csv', encoding='latin-1')
+df = df[['v1', 'v2']] 
+df.columns = ['Label', 'Text']
+
+
+def clean_text(text):
+    text = text.lower() # Convert to lowercase [cite: 977]
+    text = re.sub(r'[^a-z\s]', '', text) # Remove punctuation and numbers 
+    return text
+
+df['Clean_Text'] = df['Text'].apply(clean_text)
+
+
+vectorizer = TfidfVectorizer(stop_words='english', max_features=20) 
+tfidf_matrix = vectorizer.fit_transform(df['Clean_Text'])
+feature_names = vectorizer.get_feature_names_out()
+
+
+tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=feature_names)
+
+
+importance = tfidf_df.mean().sort_values(ascending=False)
+
+
+plt.figure(figsize=(10, 6))
+importance.plot(kind='bar', color='skyblue')
+plt.title('Top 20 Important Words by TF-IDF Score')
+plt.xlabel('Words')
+plt.ylabel('Average TF-IDF Score')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+
+print("Sample TF-IDF Matrix (First 5 rows):")
+print(tfidf_df.head())
