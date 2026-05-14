@@ -1,0 +1,77 @@
+import pandas as pd
+import numpy as np
+
+
+class ImpalaSimulator:
+
+    def __init__(self):
+        self.data = []
+        self.current_db = None
+
+    def execute(self, query):
+        print(f"Executing SQL -> {query}")
+
+        if "CREATE DATABASE" in query:
+            self.current_db = "my_database"
+
+        elif "USE" in query:
+            self.current_db = "my_database"
+
+        elif "CREATE TABLE" in query:
+            pass
+
+        elif "INSERT INTO" in query:
+            self.data = [
+                {"id": 1, "name": "John", "age": 25},
+                {"id": 2, "name": "Jane", "age": 30},
+                {"id": 3, "name": "Bob", "age": 40}
+            ]
+
+    def fetch_as_dataframe(self):
+        return pd.DataFrame(self.data)
+
+-----
+cursor = ImpalaSimulator()
+
+print("\nTASK 1: DATABASE & TABLE CREATION\n")
+
+cursor.execute("CREATE DATABASE my_database;")
+cursor.execute("USE my_database;")
+cursor.execute("""
+CREATE TABLE my_table (
+    id INT,
+    name STRING,
+    age INT
+);
+""")
+
+----
+print("\nTASK 2: DATA INSERTION\n")
+
+cursor.execute("""
+INSERT INTO my_table VALUES
+(1, 'John', 25),
+(2, 'Jane', 30),
+(3, 'Bob', 40);
+""")
+
+----
+print("\nTASK 3: SIMPLE QUERY & DATA ANALYSIS\n")
+
+df = cursor.fetch_as_dataframe()
+
+print("Original Data:")
+print(df)
+
+----
+print("\nTASK 4: DATA PREPROCESSING & NORMALIZATION\n")
+
+
+def normalize(column):
+    return (column - column.min()) / (column.max() - column.min())
+
+
+df["age_normalized"] = normalize(df["age"])
+
+print("Normalized Data:")
+print(df)
